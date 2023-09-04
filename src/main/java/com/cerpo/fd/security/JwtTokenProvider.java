@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.function.Function;
 import java.security.Key;
+import com.cerpo.fd.AppUtils;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.io.Decoders;
@@ -59,8 +60,8 @@ public class JwtTokenProvider {
                 .builder()
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30))
+                .setIssuedAt(AppUtils.getDate(null))
+                .setExpiration(AppUtils.getDate(AppUtils.getJWTExpiry()))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }

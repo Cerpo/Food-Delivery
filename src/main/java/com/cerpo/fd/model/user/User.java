@@ -1,11 +1,11 @@
 package com.cerpo.fd.model.user;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Collection;
-import lombok.Data;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+
+import jakarta.validation.constraints.NotBlank;
+import lombok.*;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.persistence.Id;
@@ -19,29 +19,42 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "_user")
 public class User implements UserDetails {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
 
+    @NotBlank
     @Column(name = "email")
-    private String  email;
+    private String email;
 
+    @NotBlank
     @Column(name = "password")
-    private String  password;
+    private String password;
+
+    @Column(name = "created_date")
+    private Date createdDate;
+
+    @Column(name = "last_login_date")
+    private Date lastLoginDate;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
     private Role role;
 
-    //Returns list of roles (We have just one role/user.)
+    public User(String email, String password, Date currentDate, Role role) {
+        this.email         = email;
+        this.password      = password;
+        this.createdDate   = currentDate;
+        this.lastLoginDate = currentDate;
+        this.role          = role;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));

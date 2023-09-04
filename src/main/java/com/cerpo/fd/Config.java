@@ -1,8 +1,12 @@
 package com.cerpo.fd;
 
-import com.cerpo.fd.model.user.UserRepository;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.util.List;
-import jakarta.servlet.Filter;
+import com.cerpo.fd.model.user.Role;
+import com.cerpo.fd.model.user.User;
+import com.cerpo.fd.model.user.UserRepository;
+import com.cerpo.fd.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -15,14 +19,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.FilterChainProxy;
-import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @RequiredArgsConstructor
 public class Config {
-    private final UserRepository userRepository;
-    //private final Filter         springSecurityFilterChain;
+    private final UserRepository   userRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Bean
     public UserDetailsService userDetailsService() {
@@ -48,14 +50,24 @@ public class Config {
         return new BCryptPasswordEncoder();
     }
 
-    /*@Bean
+    @Bean
     CommandLineRunner commandLineRunner() {
         return args -> {
-            FilterChainProxy filterChainProxy = (FilterChainProxy) springSecurityFilterChain;
-            List<SecurityFilterChain> list = filterChainProxy.getFilterChains();
-            list.stream()
-                    .flatMap(chain -> chain.getFilters().stream())
-                    .forEach(filter -> System.out.println(filter.getClass()));
+            BufferedWriter writer = new BufferedWriter(new FileWriter("./src/main/java/com/cerpo/fd/JWTTokens.txt"));
+            var customer = new User ("customer@test.com", passwordEncored().encode("1234"),
+                                      AppUtils.getDate(null), Role.ROLE_CUSTOMER);
+            var retailer = new User ("retailer@test.com", passwordEncored().encode("1234"),
+                                      AppUtils.getDate(null), Role.ROLE_RETAILER);
+            var courier  = new User ("courier@test.com", passwordEncored().encode("1234"),
+                                      AppUtils.getDate(null), Role.ROLE_COURIER);
+            var admin    = new User ("admin@test.com", passwordEncored().encode("1234"),
+                                      AppUtils.getDate(null), Role.ROLE_ADMIN);
+            writer.append("Customer's JWT Token: " + jwtTokenProvider.generateToken(customer) + "\n");
+            writer.append("Retailer's JWT Token: " + jwtTokenProvider.generateToken(retailer) + "\n");
+            writer.append("Courier's JWT Token: " + jwtTokenProvider.generateToken(courier) + "\n");
+            writer.append("Admin's JWT Token: " + jwtTokenProvider.generateToken(admin) + "\n");
+            writer.close();
+            userRepository.saveAll(List.of(customer, retailer, courier, admin));
         };
-    }*/
+    }
 }

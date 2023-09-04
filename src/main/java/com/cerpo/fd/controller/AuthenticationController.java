@@ -1,15 +1,14 @@
 package com.cerpo.fd.controller;
 
-import com.cerpo.fd.payload.AuthenticationRequest;
-import com.cerpo.fd.payload.AuthenticationResponse;
-import com.cerpo.fd.payload.RegisterRequest;
+import com.cerpo.fd.payload.auth.SignInRequest;
+import com.cerpo.fd.payload.auth.AuthenticationResponse;
+import com.cerpo.fd.payload.auth.SignUpRequest;
 import com.cerpo.fd.service.AuthenticationService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -17,13 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
-    @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request) {
-        return ResponseEntity.ok(authenticationService.register(request));
+    @PostMapping("/signin")
+    public ResponseEntity<AuthenticationResponse> authenticate(@Valid @RequestBody SignInRequest request) {
+        return new ResponseEntity<>(authenticationService.authenticate(request), HttpStatus.OK);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> register(@RequestBody AuthenticationRequest request) {
-        return ResponseEntity.ok(authenticationService.authenticate(request));
+    @PostMapping("/signup")
+    public ResponseEntity<AuthenticationResponse> register(@Valid @RequestBody SignUpRequest request) {
+        return new ResponseEntity<>(authenticationService.register(request), HttpStatus.OK);
     }
 }

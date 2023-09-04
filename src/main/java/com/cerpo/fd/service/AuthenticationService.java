@@ -1,13 +1,16 @@
 package com.cerpo.fd.service;
 
+import com.cerpo.fd.AppUtils;
+import com.cerpo.fd.exception.FDApiException;
 import com.cerpo.fd.model.user.Role;
 import com.cerpo.fd.model.user.User;
 import com.cerpo.fd.model.user.UserRepository;
-import com.cerpo.fd.payload.AuthenticationRequest;
-import com.cerpo.fd.payload.AuthenticationResponse;
-import com.cerpo.fd.payload.RegisterRequest;
+import com.cerpo.fd.payload.auth.SignInRequest;
+import com.cerpo.fd.payload.auth.AuthenticationResponse;
+import com.cerpo.fd.payload.auth.SignUpRequest;
 import com.cerpo.fd.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,21 +24,34 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider      jwtTokenProvider;
 
-    public AuthenticationResponse register(RegisterRequest request) {
-        var user = User.builder()
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.ROLE_CUSTOMER)
-                .build();
+    public AuthenticationResponse register(SignUpRequest request) {
+        userRepository.findByEmail(request.getEmail()).ifPresent(user ->
+        { throw new FDApiException(HttpStatus.BAD_REQUEST, "Email is already taken"); } );
+        var user = new User(request.getEmail(),
+                            passwordEncoder.encode(request.getPassword()),
+                            AppUtils.getDate(null),
+                            Role.ROLE_CUSTOMER);
         userRepository.save(user);
         var jwtToken = jwtTokenProvider.generateToken(user);
-        return AuthenticationResponse.builder().jwtToken(jwtToken).build();
+        return AuthenticationResponse
+                .builder()
+                .jwtToken(jwtToken)
+                .build();
     }
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+    public AuthenticationResponse authenticate(SignInRequest request) {
+        var user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new FDApiException(HttpStatus.BAD_REQUEST, "Bad credentials"));
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-        var user = userRepository.findByEmail(request.getEmail()).orElseThrow();
         var jwtToken = jwtTokenProvider.generateToken(user);
-        return AuthenticationResponse.builder().jwtToken(jwtToken).build();
+        saveLastLogin(user);
+        return AuthenticationResponse
+                .builder()
+                .jwtToken(jwtToken)
+                .build();
+    }
+
+    private void saveLastLogin(User user) {
+        user.setLastLoginDate(AppUtils.getDate(null));
+        userRepository.save(user);
     }
 }
