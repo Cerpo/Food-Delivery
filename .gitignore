@@ -36,4 +36,4 @@ build/
 
 ### Other ###
 Sample.txt
-JWTTokens.txt
+/src/main/java/com/cerpo/fd/JWTTokens.txt
