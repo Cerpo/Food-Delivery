@@ -19,6 +19,8 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
+    private static final String TOKEN_TYPE = "Bearer ";
+
     private final UserRepository        userRepository;
     private final PasswordEncoder       passwordEncoder;
     private final AuthenticationManager authenticationManager;
@@ -33,24 +35,18 @@ public class AuthenticationService {
                             Role.ROLE_CUSTOMER);
         userRepository.save(user);
         var jwtToken = jwtTokenProvider.generateToken(user);
-        return AuthenticationResponse
-                .builder()
-                .jwtToken(jwtToken)
-                .build();
+        return new AuthenticationResponse(TOKEN_TYPE, jwtToken);
     }
 
     public AuthenticationResponse authenticate(SignInRequest request) {
         var user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new FDApiException(HttpStatus.BAD_REQUEST, "Bad credentials"));
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         var jwtToken = jwtTokenProvider.generateToken(user);
-        saveLastLogin(user);
-        return AuthenticationResponse
-                .builder()
-                .jwtToken(jwtToken)
-                .build();
+        updateLastLogin(user);
+        return new AuthenticationResponse(TOKEN_TYPE, jwtToken);
     }
 
-    private void saveLastLogin(User user) {
+    private void updateLastLogin(User user) {
         user.setLastLoginDate(AppUtils.getDate(null));
         userRepository.save(user);
     }

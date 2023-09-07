@@ -53,21 +53,23 @@ public class Config {
     @Bean
     CommandLineRunner commandLineRunner() {
         return args -> {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("./src/main/java/com/cerpo/fd/JWTTokens.txt"));
-            var customer = new User ("customer@test.com", passwordEncored().encode("1234"),
-                                      AppUtils.getDate(null), Role.ROLE_CUSTOMER);
-            var retailer = new User ("retailer@test.com", passwordEncored().encode("1234"),
-                                      AppUtils.getDate(null), Role.ROLE_RETAILER);
-            var courier  = new User ("courier@test.com", passwordEncored().encode("1234"),
-                                      AppUtils.getDate(null), Role.ROLE_COURIER);
-            var admin    = new User ("admin@test.com", passwordEncored().encode("1234"),
-                                      AppUtils.getDate(null), Role.ROLE_ADMIN);
-            writer.append("Customer's JWT Token: " + jwtTokenProvider.generateToken(customer) + "\n");
-            writer.append("Retailer's JWT Token: " + jwtTokenProvider.generateToken(retailer) + "\n");
-            writer.append("Courier's JWT Token: " + jwtTokenProvider.generateToken(courier) + "\n");
-            writer.append("Admin's JWT Token: " + jwtTokenProvider.generateToken(admin) + "\n");
-            writer.close();
-            userRepository.saveAll(List.of(customer, retailer, courier, admin));
+            if (AppUtils.isDevModeEnabled()) {
+                BufferedWriter writer = new BufferedWriter(new FileWriter("./src/main/java/com/cerpo/fd/JWTTokens.txt"));
+                var customer = new User("customer@test.com", passwordEncored().encode("1234"),
+                        AppUtils.getDate(null), Role.ROLE_CUSTOMER);
+                var retailer = new User("retailer@test.com", passwordEncored().encode("1234"),
+                        AppUtils.getDate(null), Role.ROLE_RETAILER);
+                var courier = new User("courier@test.com", passwordEncored().encode("1234"),
+                        AppUtils.getDate(null), Role.ROLE_COURIER);
+                var admin = new User("admin@test.com", passwordEncored().encode("1234"),
+                        AppUtils.getDate(null), Role.ROLE_ADMIN);
+                writer.append("Customer's JWT Token: " + jwtTokenProvider.generateToken(customer) + "\n");
+                writer.append("Retailer's JWT Token: " + jwtTokenProvider.generateToken(retailer) + "\n");
+                writer.append("Courier's JWT Token: " + jwtTokenProvider.generateToken(courier) + "\n");
+                writer.append("Admin's JWT Token: " + jwtTokenProvider.generateToken(admin) + "\n");
+                writer.close();
+                userRepository.saveAll(List.of(customer, retailer, courier, admin));
+            }
         };
     }
 }
