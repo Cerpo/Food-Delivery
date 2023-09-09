@@ -1,7 +1,7 @@
 package com.cerpo.fd.exception;
 
-import com.cerpo.fd.AppUtils;
-import com.cerpo.fd.payload.ExceptionResponse;
+import com.cerpo.fd.util.AppUtils;
+import com.cerpo.fd.payload.exception.ExceptionResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

@@ -1,4 +1,4 @@
-package com.cerpo.fd;
+package com.cerpo.fd.util;
 
 import java.io.IOException;
 import java.util.Properties;

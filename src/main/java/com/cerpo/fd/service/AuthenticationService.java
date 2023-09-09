@@ -1,6 +1,6 @@
 package com.cerpo.fd.service;
 
-import com.cerpo.fd.AppUtils;
+import com.cerpo.fd.util.AppUtils;
 import com.cerpo.fd.exception.FDApiException;
 import com.cerpo.fd.model.user.Role;
 import com.cerpo.fd.model.user.User;
@@ -42,11 +42,11 @@ public class AuthenticationService {
         var user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new FDApiException(HttpStatus.BAD_REQUEST, "Bad credentials"));
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         var jwtToken = jwtTokenProvider.generateToken(user);
-        updateLastLogin(user);
+        updateLoginDate(user);
         return new AuthenticationResponse(TOKEN_TYPE, jwtToken);
     }
 
-    private void updateLastLogin(User user) {
+    private void updateLoginDate(User user) {
         user.setLastLoginDate(AppUtils.getDate(null));
         userRepository.save(user);
     }

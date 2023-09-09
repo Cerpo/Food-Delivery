@@ -1,6 +1,6 @@
-package com.cerpo.fd.model.category;
+package com.cerpo.fd.model.retailer.category;
 
-import com.cerpo.fd.model.item.Item;
+import com.cerpo.fd.model.retailer.item.Item;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -26,6 +26,10 @@ public class Category {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "category_fk", referencedColumnName = "category_id")
     private List<Item> items;
+
+    public Category(String categoryName) {
+        this.categoryName = categoryName;
+    }
 
     //Retailer
 }

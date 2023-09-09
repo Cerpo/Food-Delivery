@@ -1,4 +1,4 @@
-package com.cerpo.fd.model.item;
+package com.cerpo.fd.model.retailer.item;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

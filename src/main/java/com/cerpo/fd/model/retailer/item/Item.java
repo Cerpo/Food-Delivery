@@ -1,10 +1,12 @@
-package com.cerpo.fd.model.item;
+package com.cerpo.fd.model.retailer.item;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
 
 @Data
 @NoArgsConstructor
@@ -27,7 +29,7 @@ public class Item {
 
     @NotBlank
     @Column(name = "price")
-    private Double price;
+    private BigDecimal price;
 
     //Allergének
 }

@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.function.Function;
 import java.security.Key;
-import com.cerpo.fd.AppUtils;
+import com.cerpo.fd.util.AppUtils;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.io.Decoders;

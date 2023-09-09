@@ -1,8 +1,10 @@
-package com.cerpo.fd;
+package com.cerpo.fd.config;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.List;
+
+import com.cerpo.fd.util.AppUtils;
 import com.cerpo.fd.model.user.Role;
 import com.cerpo.fd.model.user.User;
 import com.cerpo.fd.model.user.UserRepository;
