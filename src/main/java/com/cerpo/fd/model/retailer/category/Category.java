@@ -26,10 +26,4 @@ public class Category {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "category_fk", referencedColumnName = "category_id")
     private List<Item> items;
-
-    public Category(String categoryName) {
-        this.categoryName = categoryName;
-    }
-
-    //Retailer
 }

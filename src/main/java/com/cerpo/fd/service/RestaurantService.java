@@ -1,11 +1,14 @@
 package com.cerpo.fd.service;
 
+import com.cerpo.fd.exception.FDApiException;
 import com.cerpo.fd.model.retailer.Retailer;
 import com.cerpo.fd.model.retailer.RetailerRepository;
 import com.cerpo.fd.payload.restaurant.Restaurant;
+import com.cerpo.fd.payload.restaurant.RestaurantDetails;
 import com.cerpo.fd.payload.restaurant.RestaurantResponse;
 import com.cerpo.fd.payload.restaurant.RestaurantsResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,10 +36,11 @@ public class RestaurantService {
     }
 
     public RestaurantResponse getRestaurant(Integer retailerId) {
-        Retailer retailer = retailerRepository.findById(retailerId).orElseThrow(RuntimeException::new);
+        Retailer retailer = retailerRepository.findById(retailerId).orElseThrow(() -> new FDApiException(HttpStatus.BAD_REQUEST, "Restaurant does not exist"));
         return new RestaurantResponse(retailerId,
                                       retailer.getRestaurantName(),
                                       retailer.getImgUrl(),
+                                      new RestaurantDetails(retailer.getAddress()),
                                       retailer.getCategories());
     }
 }

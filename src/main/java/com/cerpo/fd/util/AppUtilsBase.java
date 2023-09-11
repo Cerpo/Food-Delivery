@@ -3,7 +3,7 @@ package com.cerpo.fd.util;
 import java.io.IOException;
 import java.util.Properties;
 
-public class AppUtilsBase {
+public sealed class AppUtilsBase permits AppUtils {
     private static final Properties properties;
 
     static {

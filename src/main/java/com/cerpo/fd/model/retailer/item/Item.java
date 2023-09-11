@@ -1,6 +1,7 @@
 package com.cerpo.fd.model.retailer.item;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,7 +28,7 @@ public class Item {
     @Column(name = "description")
     private String description;
 
-    @NotBlank
+    @Digits(integer = 5, fraction = 0)
     @Column(name = "price")
     private BigDecimal price;
 

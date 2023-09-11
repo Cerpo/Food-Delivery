@@ -4,5 +4,5 @@ import com.cerpo.fd.model.retailer.category.Category;
 
 import java.util.List;
 
-public record RestaurantResponse(Integer retailerId, String restaurantName, String imgUrl, List<Category> categories) {
+public record RestaurantResponse(Integer restaurantId, String restaurantName, String imgUrl, RestaurantDetails restaurantDetails, List<Category> categories) {
 }
