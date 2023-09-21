@@ -18,7 +18,7 @@ public class RestaurantController {
 
     @GetMapping
     public ResponseEntity<GetRestaurantsResponse> getRestaurants() {
-        return new ResponseEntity<GetRestaurantsResponse>(restaurantService.getRestaurants(), HttpStatus.OK);
+        return new ResponseEntity<>(restaurantService.getRestaurants(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
