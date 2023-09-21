@@ -1,7 +1,7 @@
 package com.cerpo.fd.controller;
 
 import com.cerpo.fd.payload.auth.SignInRequest;
-import com.cerpo.fd.payload.auth.AuthenticationResponse;
+import com.cerpo.fd.payload.auth.AuthResponse;
 import com.cerpo.fd.payload.auth.SignUpRequest;
 import com.cerpo.fd.service.AuthenticationService;
 import jakarta.validation.Valid;
@@ -17,12 +17,12 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/signin")
-    public ResponseEntity<AuthenticationResponse> authenticate(@Valid @RequestBody SignInRequest request) {
+    public ResponseEntity<AuthResponse> authenticate(@Valid @RequestBody SignInRequest request) {
         return new ResponseEntity<>(authenticationService.authenticate(request), HttpStatus.OK);
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<AuthenticationResponse> register(@Valid @RequestBody SignUpRequest request) {
+    public ResponseEntity<AuthResponse> register(@Valid @RequestBody SignUpRequest request) {
         return new ResponseEntity<>(authenticationService.register(request), HttpStatus.OK);
     }
 }

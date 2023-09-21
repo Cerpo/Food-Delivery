@@ -4,7 +4,7 @@ import com.cerpo.fd.exception.FDApiException;
 import com.cerpo.fd.model.user.Role;
 import com.cerpo.fd.model.user.User;
 import com.cerpo.fd.model.user.UserRepository;
-import com.cerpo.fd.payload.auth.AuthenticationResponse;
+import com.cerpo.fd.payload.auth.AuthResponse;
 import com.cerpo.fd.payload.auth.SignInRequest;
 import com.cerpo.fd.payload.auth.SignUpRequest;
 import com.cerpo.fd.security.JwtTokenProvider;
@@ -54,7 +54,7 @@ public class TestAuthService {
         request.setEmail("Test@test.com");
         request.setPassword("TestPW");
 
-        AuthenticationResponse resp = authenticationService.authenticate(request);
+        AuthResponse resp = authenticationService.authenticate(request);
         assertThat(resp.jwtToken()).isEqualTo(jwt);
         verify(userRepository).save(user);
     }
@@ -84,7 +84,7 @@ public class TestAuthService {
         request.setEmail("Test@test.com");
         request.setPassword("TestPW");
 
-        AuthenticationResponse resp = authenticationService.register(request);
+        AuthResponse resp = authenticationService.register(request);
         assertThat(resp.jwtToken()).isEqualTo(jwt);
         verify(userRepository).save(any());
     }

@@ -6,7 +6,7 @@ import com.cerpo.fd.model.user.Role;
 import com.cerpo.fd.model.user.User;
 import com.cerpo.fd.model.user.UserRepository;
 import com.cerpo.fd.payload.auth.SignInRequest;
-import com.cerpo.fd.payload.auth.AuthenticationResponse;
+import com.cerpo.fd.payload.auth.AuthResponse;
 import com.cerpo.fd.payload.auth.SignUpRequest;
 import com.cerpo.fd.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,7 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider      jwtTokenProvider;
 
-    public AuthenticationResponse register(SignUpRequest request) {
+    public AuthResponse register(SignUpRequest request) {
         userRepository.findByEmail(request.getEmail()).ifPresent(user ->
         { throw new FDApiException(HttpStatus.BAD_REQUEST, "Email is already taken"); } );
         var user = new User(request.getEmail(),
@@ -35,15 +35,15 @@ public class AuthenticationService {
                             Role.ROLE_CUSTOMER);
         userRepository.save(user);
         var jwtToken = jwtTokenProvider.generateToken(user);
-        return new AuthenticationResponse(TOKEN_TYPE, jwtToken);
+        return new AuthResponse(TOKEN_TYPE, jwtToken);
     }
 
-    public AuthenticationResponse authenticate(SignInRequest request) {
+    public AuthResponse authenticate(SignInRequest request) {
         var user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new FDApiException(HttpStatus.BAD_REQUEST, "Bad credentials"));
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         var jwtToken = jwtTokenProvider.generateToken(user);
         updateLoginDate(user);
-        return new AuthenticationResponse(TOKEN_TYPE, jwtToken);
+        return new AuthResponse(TOKEN_TYPE, jwtToken);
     }
 
     private void updateLoginDate(User user) {
