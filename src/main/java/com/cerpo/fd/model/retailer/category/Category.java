@@ -3,7 +3,6 @@ package com.cerpo.fd.model.retailer.category;
 import com.cerpo.fd.model.retailer.item.Item;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.util.List;
