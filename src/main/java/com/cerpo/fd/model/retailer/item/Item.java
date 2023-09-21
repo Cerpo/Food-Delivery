@@ -11,7 +11,6 @@ import java.math.BigDecimal;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "item")
 public class Item {
@@ -33,4 +32,10 @@ public class Item {
     private BigDecimal price;
 
     //Allergének
+
+    public Item(String itemName, String description, BigDecimal price) {
+        this.itemName = itemName;
+        this.description = description;
+        this.price = price;
+    }
 }

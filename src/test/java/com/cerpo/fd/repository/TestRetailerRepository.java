@@ -25,16 +25,17 @@ public class TestRetailerRepository {
 
     @Test
     public void testFindRetailerById() {
-        Retailer retailer = createTestRetailer(1);
+        Retailer retailer = createTestRetailer();
 
         retailerRepository.save(retailer);
-        Optional<Retailer> dbRetailer = retailerRepository.findById(1);
+        Optional<Retailer> dbRetailer = retailerRepository.findById(retailer.getRetailerId());
 
         assertThat(dbRetailer).isNotNull().get().isEqualTo(retailer);
     }
 
-    private Retailer createTestRetailer(Integer retailerId) {
-        RetailerAddress retailerAddress = new RetailerAddress(1, "Budapest", 1111, "Fehérvári út", "10");
+    private Retailer createTestRetailer() {
+        Retailer retailer;
+        RetailerAddress retailerAddress = new RetailerAddress("Budapest", 1111, "Fehérvári út", "10");
         List<Category> categories = new ArrayList<>();
         List<Item> items = new ArrayList<>();
         List<Item> items2 = new ArrayList<>();
@@ -42,21 +43,34 @@ public class TestRetailerRepository {
         Category category, category2;
         Item item, item2, item3;
 
-        item = new Item(1, "Cola", "Sample desc", new BigDecimal("2000"));
-        item2 = new Item(2, "Beef", "Sample desc", new BigDecimal("5000"));
-        item3 = new Item(3, "Chicken", "Sample desc", new BigDecimal("4000"));
+        item = new Item("Cola", "Sample desc", new BigDecimal("2000"));
+        item2 = new Item("Beef", "Sample desc", new BigDecimal("5000"));
+        item3 = new Item("Chicken", "Sample desc", new BigDecimal("4000"));
         items.add(item);
         items2.add(item2);
         items2.add(item3);
 
-        category = new Category(1, "Drink", items);
-        category2 = new Category(2, "Meat", items2);
+        category = new Category("Drink", items);
+        category2 = new Category("Meat", items2);
         categories.add(category);
         categories.add(category2);
 
-        return new Retailer(retailerId, "McDaniels",
-                "Daniels&Daniels", new BigDecimal("2000"),
-                "Sample Desc", "src/test",
-                retailerAddress, categories);
+        retailer = new Retailer("McDaniels",
+                    "Daniels&Daniels", new BigDecimal("2000"),
+                    "Sample Desc", "src/test",
+                    retailerAddress, categories);
+        retailer.getAddress().setRetailer(retailer);
+        return retailer;
+    }
+
+    @Test
+    public void testFindAllRetailer() {
+        List<Retailer> retailers = List.of(createTestRetailer(), createTestRetailer());
+
+        retailerRepository.saveAll(retailers);
+
+        List<Retailer> dbRetailers = retailerRepository.findAll();
+
+        assertThat(dbRetailers).isNotNull().isEqualTo(retailers);
     }
 }

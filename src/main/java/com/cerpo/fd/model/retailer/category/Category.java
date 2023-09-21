@@ -10,7 +10,6 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "category")
 public class Category {
@@ -26,4 +25,9 @@ public class Category {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "category_fk", referencedColumnName = "category_id")
     private List<Item> items;
+
+    public Category(String categoryName, List<Item> items) {
+        this.categoryName = categoryName;
+        this.items = items;
+    }
 }

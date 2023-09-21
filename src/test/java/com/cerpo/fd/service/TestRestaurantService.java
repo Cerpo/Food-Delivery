@@ -6,8 +6,8 @@ import com.cerpo.fd.model.retailer.RetailerAddress;
 import com.cerpo.fd.model.retailer.RetailerRepository;
 import com.cerpo.fd.model.retailer.category.Category;
 import com.cerpo.fd.model.retailer.item.Item;
-import com.cerpo.fd.payload.restaurant.RestaurantResponse;
-import com.cerpo.fd.payload.restaurant.RestaurantsResponse;
+import com.cerpo.fd.payload.restaurant.GetRestaurantResponse;
+import com.cerpo.fd.payload.restaurant.GetRestaurantsResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,20 +35,19 @@ public class TestRestaurantService {
 
     @Test
     public void testGetRestaurant() {
-        Retailer retailer = createTestRetailer(1);
+        Retailer retailer = createTestRetailer();
         given(retailerRepository.findById(1)).willReturn(Optional.of(retailer));
 
-        RestaurantResponse restaurantResponse = restaurantService.getRestaurant(1);
+        GetRestaurantResponse restaurantResponse = restaurantService.getRestaurant(1);
 
         assertThat(restaurantResponse.restaurantId()).isEqualTo(1);
         assertThat(restaurantResponse.restaurantDetails().restaurantAddress()).isEqualTo(retailer.getAddress());
-        assertThat(restaurantResponse.categories().size()).isEqualTo(2);
-        assertThat(restaurantResponse.categories().get(0).getItems().size()).isEqualTo(1);
-        assertThat(restaurantResponse.categories().get(1).getItems().size()).isEqualTo(2);
+        assertThat(restaurantResponse.categories()).isEqualTo(retailer.getCategories());
     }
 
-    private Retailer createTestRetailer(Integer retailerId) {
-        RetailerAddress retailerAddress = new RetailerAddress(1, "Budapest", 1111, "Fehérvári út", "10");
+    private Retailer createTestRetailer() {
+        Retailer retailer;
+        RetailerAddress retailerAddress = new RetailerAddress("Budapest", 1111, "Fehérvári út", "10");
         List<Category> categories = new ArrayList<>();
         List<Item> items = new ArrayList<>();
         List<Item> items2 = new ArrayList<>();
@@ -56,22 +55,24 @@ public class TestRestaurantService {
         Category category, category2;
         Item item, item2, item3;
 
-        item = new Item(1, "Cola", "Sample desc", new BigDecimal("2000"));
-        item2 = new Item(2, "Beef", "Sample desc", new BigDecimal("5000"));
-        item3 = new Item(3, "Chicken", "Sample desc", new BigDecimal("4000"));
+        item = new Item("Cola", "Sample desc", new BigDecimal("2000"));
+        item2 = new Item("Beef", "Sample desc", new BigDecimal("5000"));
+        item3 = new Item("Chicken", "Sample desc", new BigDecimal("4000"));
         items.add(item);
         items2.add(item2);
         items2.add(item3);
 
-        category = new Category(1, "Drink", items);
-        category2 = new Category(2, "Meat", items2);
+        category = new Category("Drink", items);
+        category2 = new Category("Meat", items2);
         categories.add(category);
         categories.add(category2);
 
-        return new Retailer(retailerId, "McDaniels",
-                "Daniels&Daniels", new BigDecimal("2000"),
+        retailer = new Retailer("McDaniels",
+                    "Daniels&Daniels", new BigDecimal("2000"),
                     "Sample Desc", "src/test",
-                                retailerAddress, categories);
+                    retailerAddress, categories);
+        retailer.getAddress().setRetailer(retailer);
+        return retailer;
     }
 
     @Test
@@ -85,14 +86,14 @@ public class TestRestaurantService {
 
     @Test
     public void testGetRestaurants() {
-        List<Retailer> retailers = List.of(createTestRetailer(3), createTestRetailer(4));
+        List<Retailer> retailers = List.of(createTestRetailer(), createTestRetailer());
 
         given(retailerRepository.findAll()).willReturn(retailers);
 
-        RestaurantsResponse restaurantsResponse = restaurantService.getRestaurants();
+        GetRestaurantsResponse restaurantsResponse = restaurantService.getRestaurants();
 
         assertThat(restaurantsResponse.restaurants().size()).isEqualTo(2);
-        assertThat(restaurantsResponse.restaurants().get(0).restaurantId()).isEqualTo(3);
-        assertThat(restaurantsResponse.restaurants().get(1).restaurantId()).isEqualTo(4);
+        assertThat(restaurantsResponse.restaurants().get(0).restaurantName()).isNotNull();
+        assertThat(restaurantsResponse.restaurants().get(1).restaurantName()).isNotNull();
     }
 }

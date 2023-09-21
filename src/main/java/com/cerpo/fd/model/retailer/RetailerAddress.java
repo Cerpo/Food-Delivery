@@ -3,20 +3,23 @@ package com.cerpo.fd.model.retailer;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "retailer_address")
 public class RetailerAddress {
+    @EqualsAndHashCode.Exclude
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "address_id")
-    private Integer addressId;
+    @Column(name = "retailer_fk")
+    private Integer retailerFk;
+
+    @EqualsAndHashCode.Exclude
+    @OneToOne
+    @MapsId
+    @JoinColumn(name = "retailer_fk")
+    private Retailer retailer;
 
     @NotBlank
     @Column(name = "settlement")
@@ -33,4 +36,11 @@ public class RetailerAddress {
     @NotBlank
     @Column(name = "street_number")
     private String streetNumber;
+
+    public RetailerAddress(String settlement, Integer zipCode, String streetName, String streetNumber) {
+        this.settlement = settlement;
+        this.zipCode = zipCode;
+        this.streetName = streetName;
+        this.streetNumber = streetNumber;
+    }
 }

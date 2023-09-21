@@ -1,7 +1,7 @@
 package com.cerpo.fd.controller;
 
-import com.cerpo.fd.payload.restaurant.RestaurantResponse;
-import com.cerpo.fd.payload.restaurant.RestaurantsResponse;
+import com.cerpo.fd.payload.restaurant.GetRestaurantResponse;
+import com.cerpo.fd.payload.restaurant.GetRestaurantsResponse;
 import com.cerpo.fd.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,12 +17,12 @@ public class RestaurantController {
     private final RestaurantService restaurantService;
 
     @GetMapping
-    public ResponseEntity<RestaurantsResponse> getRestaurants() {
-        return new ResponseEntity<RestaurantsResponse>(restaurantService.getRestaurants(), HttpStatus.OK);
+    public ResponseEntity<GetRestaurantsResponse> getRestaurants() {
+        return new ResponseEntity<GetRestaurantsResponse>(restaurantService.getRestaurants(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RestaurantResponse> getRestaurant(@PathVariable(name = "id") Integer retailerId) {
+    public ResponseEntity<GetRestaurantResponse> getRestaurant(@PathVariable(name = "id") Integer retailerId) {
         return new ResponseEntity<>(restaurantService.getRestaurant(retailerId), HttpStatus.OK);
     }
 }

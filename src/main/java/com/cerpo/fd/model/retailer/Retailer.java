@@ -4,16 +4,13 @@ import com.cerpo.fd.model.retailer.category.Category;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "retailer")
 public class Retailer {
@@ -40,11 +37,22 @@ public class Retailer {
     @Column(name = "img_url")
     private String imgUrl;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "address_fk", referencedColumnName = "address_id")
+    @ToString.Exclude
+    @OneToOne(mappedBy = "retailer", cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
     private RetailerAddress address;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "retailer_fk", referencedColumnName = "retailer_id")
     private List<Category> categories;
+
+    public Retailer(String restaurantName, String companyName, BigDecimal minimumOrder, String description, String imgUrl, RetailerAddress address, List<Category> categories) {
+        this.restaurantName = restaurantName;
+        this.companyName = companyName;
+        this.minimumOrder = minimumOrder;
+        this.description = description;
+        this.imgUrl = imgUrl;
+        this.address = address;
+        this.categories = categories;
+    }
 }
