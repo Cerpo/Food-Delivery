@@ -33,18 +33,6 @@ public class TestRestaurantService {
         restaurantService = new RestaurantService(retailerRepository);
     }
 
-    @Test
-    public void testGetRestaurant() {
-        Retailer retailer = createTestRetailer();
-        given(retailerRepository.findById(1)).willReturn(Optional.of(retailer));
-
-        GetRestaurantResponse restaurantResponse = restaurantService.getRestaurant(1);
-
-        assertThat(restaurantResponse.restaurantId()).isEqualTo(1);
-        assertThat(restaurantResponse.restaurantDetails().restaurantAddress()).isEqualTo(retailer.getAddress());
-        assertThat(restaurantResponse.categories()).isEqualTo(retailer.getCategories());
-    }
-
     private Retailer createTestRetailer() {
         Retailer retailer;
         RetailerAddress retailerAddress = new RetailerAddress("Budapest", 1111, "Fehérvári út", "10");
@@ -68,15 +56,27 @@ public class TestRestaurantService {
         categories.add(category2);
 
         retailer = new Retailer("McDaniels",
-                    "Daniels&Daniels", new BigDecimal("2000"),
-                    "Sample Desc", "src/test",
-                    retailerAddress, categories);
+                "Daniels&Daniels", new BigDecimal("2000"),
+                "Sample Desc", "src/test",
+                retailerAddress, categories);
         retailer.getAddress().setRetailer(retailer);
         return retailer;
     }
 
     @Test
-    public void testGetRestaurantBadRequest() {
+    public void testGetRestaurant() {
+        Retailer retailer = createTestRetailer();
+        given(retailerRepository.findById(1)).willReturn(Optional.of(retailer));
+
+        GetRestaurantResponse resp = restaurantService.getRestaurant(1);
+
+        assertThat(resp.restaurantId()).isEqualTo(1);
+        assertThat(resp.restaurantDetails().restaurantAddress()).isEqualTo(retailer.getAddress());
+        assertThat(resp.categories()).isEqualTo(retailer.getCategories());
+    }
+
+    @Test
+    public void testGetRestaurantException() {
         given(retailerRepository.findById(2)).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> restaurantService.getRestaurant(2))
@@ -90,10 +90,10 @@ public class TestRestaurantService {
 
         given(retailerRepository.findAll()).willReturn(retailers);
 
-        GetRestaurantsResponse restaurantsResponse = restaurantService.getRestaurants();
+        GetRestaurantsResponse resp = restaurantService.getRestaurants();
 
-        assertThat(restaurantsResponse.restaurants().size()).isEqualTo(2);
-        assertThat(restaurantsResponse.restaurants().get(0).restaurantName()).isNotNull();
-        assertThat(restaurantsResponse.restaurants().get(1).restaurantName()).isNotNull();
+        assertThat(resp.restaurants().size()).isEqualTo(2);
+        assertThat(resp.restaurants().get(0).restaurantName()).isNotNull();
+        assertThat(resp.restaurants().get(1).restaurantName()).isNotNull();
     }
 }
